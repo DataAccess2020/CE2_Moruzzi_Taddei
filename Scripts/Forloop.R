@@ -37,7 +37,7 @@ for (i in seq_along(links_arc)) {
                     to_html = here::here("archivio2016", str_c("page_",i,".html")), 
                     my_email = email)
   
-  Sys.sleep(1)
+  Sys.sleep(2)
 }
 
 ################
