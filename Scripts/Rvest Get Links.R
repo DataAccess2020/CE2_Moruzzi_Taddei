@@ -1,5 +1,8 @@
 #Get all links CODING
 library(XML)
+library(stringr)
+library(tidyverse)
+library(dplyr)
 
 #To get all the link in the HTML that we download
 url
