@@ -1,6 +1,6 @@
 #Get all links CODING
 
-install.packages("XML")
+library(XML)
 
 #To get all the link in the HTML that we download
 url

@@ -50,6 +50,21 @@ links_post2 %>%
 df_BG_posts2 = tibble(links_post2)
 
 
+#trying using another function
+
+str_view_all(all_link, pattern = "^https://beppegrillo\\.it/[^category].+")
+
+BG_POST <- str_extract_all(all_link, pattern = "^https://beppegrillo\\.it/[^category].+")
+
+BG_POST <- unlist(all_link)
+BG_POST_DF <- as.data.frame(BG_POST)
+
+
+
+
+
+
+
 
 
 
