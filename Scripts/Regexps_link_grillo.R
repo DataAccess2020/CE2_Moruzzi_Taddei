@@ -1,15 +1,14 @@
 # Use the regexp to take the links
 
 library(stringr)
-install.packages("XML")
-library(dplyr)
+library (XML)
+library(tidyverse)
 
 str_view_all(all_link, pattern= "https://beppegrillo.it/")
 
-link_beppe = str_view_all(all_link, pattern= "^https://beppegrillo.it/")
+link_beppe = str_view_all(all_link, pattern = "^https://beppegrillo.it/")
 
-links_beppe = str_extract(str_view_all(all_link, pattern= "^https://beppegrillo.it/"))
-
+links_beppe = str_extract(all_link, pattern = "^https://beppegrillo.it/")
 
 blog="^https://beppegrillo.it/"
 beppe_link = all_link %>% 
