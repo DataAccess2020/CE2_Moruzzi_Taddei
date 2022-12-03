@@ -1,5 +1,4 @@
 #Get all links CODING
-
 library(XML)
 
 #To get all the link in the HTML that we download
