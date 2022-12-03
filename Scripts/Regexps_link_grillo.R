@@ -17,3 +17,43 @@ beppe_link %>%
   str_extract(all_link)
 
 df_links_beppe = tibble(beppe_link) #da tutti i link di beppegrillo.it DOBBIAMO SOLO POST NEL SENSO DI ARTICOLI???
+
+
+#removes all the links that redirect to the main page but not exclusively to posts (???) -- several attempts
+
+blog="^https://beppegrillo.it/.+"
+links_post1 = all_link %>% 
+  str_subset(blog)
+links_post1 %>% 
+  str_extract(all_link)
+
+df_BG_posts1 = tibble(links_post1)
+
+
+blog="^https://beppegrillo.it/.+-.+-.+"
+links_post = all_link %>% 
+  str_subset(blog)
+links_post %>% 
+  str_extract(all_link)
+
+df_BG_posts = tibble(links_post)
+
+blog="^https://beppegrillo.it/[^category]"
+links_post2 = all_link %>% 
+  str_subset(blog)
+links_post2 %>% 
+  str_extract(all_link)
+
+df_BG_posts2 = tibble(links_post2)
+
+
+
+
+
+
+
+
+
+
+
+
