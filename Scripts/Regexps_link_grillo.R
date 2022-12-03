@@ -38,13 +38,17 @@ links_post %>%
 
 df_BG_posts = tibble(links_post)
 
-blog="^https://beppegrillo.it/[^category]"
+
+#final result: still contains one jpeg file to be removed
+
+blog="^https://beppegrillo\\.it/[^category].+"
 links_post2 = all_link %>% 
   str_subset(blog)
 links_post2 %>% 
   str_extract(all_link)
 
 df_BG_posts2 = tibble(links_post2)
+
 
 
 
