@@ -1,0 +1,35 @@
+---
+title: "CE2 Moruzzi Taddei"
+author: "Chiara Moruzzi, Federico Taddei"
+date: "2022-12-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## TASK 1
+
+## TASK 2
+
+```{r cars, message=FALSE, warning=FALSE, echo=TRUE}
+library(RCurl)
+
+url <- "https://beppegrillo.it/un-mare-di-plastica-ci-sommergera/"
+email <- "icotaddei@gmail.com"
+agent <- R.Version()$version.string
+user_id <- c(From = email, `User-Agent` = agent)
+
+web_page <- RCurl::getURL(url=url, httpheader= (user_id))
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
