@@ -128,29 +128,63 @@ library(httr)
 library(htmltools)
 library(rvest)
 
-#first try just with the first article
+#first try just with the first article ALL TEXT
 
 read_html(here::here("Post archivio 2016//post_1.html")) %>% 
   html_elements(css = "p") %>% 
   html_text(trim = TRUE)
 
+# for ONLY THE FIRST PARAGRAPH
+read_html(here::here("Post archivio 2016//post_1.html")) %>% 
+  html_elements(css = "p") %>% 
+  html_text(trim = TRUE) %>% 
+  head(1)
+
 #now we do the same for all the articles
 
-post_2016_html <- str_c("Post archivio 2016/post_", 1:363)
-links_arc
+#####################
 
-main_text = for (i in seq_along(post_2016_html)) {
-  read_html(here::here("Post archivio 2016", str_c("post_",i,".html"))) %>% 
+# PER TUTTI I PARAGRAFI NEL POST
+
+library(dplyr)
+library(rvest)
+library(stringr)
+
+scrape_363 <- list.files(here::here("Post archivio 2016"), pattern="*.html", full.names = TRUE)
+main_text = lapply(scrape_363, function(x) {
+  read = read_html(x) %>% 
     html_elements(css = "p") %>% 
     html_text(trim = TRUE)
-}
+})
+#crea lista grande con tutti MAIN TEXT dei 363 post
+
+unl_text <- unlist(main_text) #unlista la lista gigante con tutti i testi
+
+df_text = tibble(unl_text) #messo in un dataframe
+
+clean_df_text_all=distinct(df_text) #ripulita dai doppioni
 
 
+# PER SOLO IL PRIMO PARAGRAFO NEL POST
 
+library(dplyr)
+library(rvest)
+library(stringr)
 
+scrape_363 <- list.files(here::here("Post archivio 2016"), pattern="*.html", full.names = TRUE)
+main_text_first = lapply(scrape_363, function(x) {
+  read = read_html(x) %>% 
+    html_elements(css = "p") %>% 
+    html_text(trim = TRUE) %>% 
+    head(1)
+})
+#crea lista grande con tutti MAIN TEXT dei 363 post
 
+unl_text_first <- unlist(main_text_first) #unlista la lista gigante con tutti i testi
 
+df_text_first = tibble(unl_text_first) #messo in un dataframe
 
+clean_df_text_first=distinct(df_text_first) #ripulita dai doppioni
 
 
 
