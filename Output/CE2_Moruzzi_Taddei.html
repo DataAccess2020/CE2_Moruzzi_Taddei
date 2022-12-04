@@ -359,9 +359,18 @@ display: none;
 
 <div id="task-1" class="section level2">
 <h2>TASK 1</h2>
+<p>When we tryed to open the /robots.txt page for the blog
+beppegrillo.it didn’t work, the result was “404 Not Found”. This means
+that the blog doesn’t have any restrictions for crawlers who want to
+download data from it. Next, in order to still be polite, we can
+download data frome the web page but identifying ourselves first and
+using the <code>Sys_sleep()</code> function not to overload the
+webpage.</p>
 </div>
 <div id="task-2" class="section level2">
 <h2>TASK 2</h2>
+<p>First we download the web page identifying ourselves and using the
+package RCurl:</p>
 <pre class="r"><code>library(RCurl)
 
 url &lt;- &quot;https://beppegrillo.it/un-mare-di-plastica-ci-sommergera/&quot;

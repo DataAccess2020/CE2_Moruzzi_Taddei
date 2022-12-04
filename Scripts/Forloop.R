@@ -5,19 +5,17 @@ download_politely <- function(from_url, to_html, my_email, my_agent = R.Version(
   
   require(httr)
   
-  # Check that arguments are inputted as expected:
   stopifnot(is.character(from_url))
   stopifnot(is.character(to_html))
   stopifnot(is.character(my_email))
   
-  # GET politely
   beppe_req <-httr::GET(url = links_arc[i], 
                         add_headers(
                           From = email, 
                           `User-Agent` = R.Version()$version.string
                         )
   )
-  # If status == 200, extract content and save to a file:
+  
   if (httr::http_status(beppe_req)$message == "Success: (200) OK") {
     bin <- content(beppe_req, as = "raw")
     writeBin(object = bin, con = to_html)
@@ -37,7 +35,7 @@ for (i in seq_along(links_arc)) {
                     to_html = here::here("archivio2016", str_c("page_",i,".html")), 
                     my_email = email)
   
-  Sys.sleep(2)
+  Sys.sleep(0.5)
 }
 
 ################
@@ -50,6 +48,9 @@ for (i in seq_along(all_html_archivio2016)){
                         
   Sys.sleep(0.5)
 }
+
+all_html_archivio2016
+
 ##############################
 
 #Prova per link giusti ai post per pag2
@@ -78,3 +79,21 @@ for (i in seq_along(all_html_archivio2016[[i]])){
 }
 
 print(all_links_47)
+
+### prova 2
+
+
+links_arc_combined <- str_c(all_html_archivio2016 = XML::getHTMLLinks(to_scrape[i], externalOnly = T), 1:47)
+url_archivio <- "https://beppegrillo.it/category/archivio/2016/page/"
+
+web_page_archivio <- RCurl::getURL(url=url_archivio, httpheader= (user_id))
+
+for (i in seq_along(web_page_archivio[[i]])){
+  all_links_archivio = XML::getHTMLLinks(web_page_archivio[[i]], externalOnly = T)
+  Sys.sleep(0.5)
+}
+
+
+
+
+

@@ -19,7 +19,7 @@ beppe_link %>%
 df_links_beppe = tibble(beppe_link)
 
 
-#removes all the links that redirect to the main page, ctaegories and jpg
+#removes all the links that redirect to the main page, categories and jpg
 
 blog="^https://beppegrillo\\.it/[^category].+[^jpg]$"
 links_post = all_link %>% 

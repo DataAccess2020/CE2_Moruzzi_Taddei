@@ -11,7 +11,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## TASK 1
 
+When we tryed to open the /robots.txt page for the blog beppegrillo.it didn't work, the result was "404 Not Found". This means that the blog doesn't have any restrictions for crawlers who want to download data from it. Next, in order to still be polite, we can download data frome the web page but identifying ourselves first and using the `Sys.sleep()` function not to overload the webpage.
+
 ## TASK 2
+
+First we download the web page identifying ourselves and using the package RCurl:
+
 
 ```{r cars, message=FALSE, warning=FALSE, echo=TRUE}
 library(RCurl)
@@ -24,12 +29,12 @@ user_id <- c(From = email, `User-Agent` = agent)
 web_page <- RCurl::getURL(url=url, httpheader= (user_id))
 ```
 
-## Including Plots
+## TASK 3
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## TASK 4
+
+## TASK 5
+
+
