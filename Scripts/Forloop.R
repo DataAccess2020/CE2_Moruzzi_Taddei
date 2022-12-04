@@ -76,3 +76,9 @@ links_47 %>%
   str_extract(all_html_chr)
 
 df_47_post = tibble(links_47) #ALL LINKS FOR ALL THE POST IN ARCHIVIO 2016 IN DATAFRAME
+
+########################
+#Clean all 47 df link removing duplicates
+clean_df_47=distinct(df_47_post)
+
+

@@ -29,6 +29,10 @@ links_post %>%
 
 df_BG_posts = tibble(links_post)
 
+# Clean the df removing duplicates
+
+clean_df_BG = distinct(df_BG_posts)
+
 
 
 
