@@ -107,7 +107,7 @@ download_politely_47 <- function(from_url, to_html, my_email, my_agent = R.Versi
   }
 }
 
-
+#now we download all the html pages for each single post and we put them in a new specific folder
 
 dir.create("Post archivio 2016")
 
@@ -122,7 +122,28 @@ for (i in seq_along(unl_clean_df_47)) {
   Sys.sleep(0.5)
 }
 
+#now we scrape the main text from all the articles
 
+library(httr)
+library(htmltools)
+library(rvest)
+
+#first try just with the first article
+
+read_html(here::here("Post archivio 2016//post_1.html")) %>% 
+  html_elements(css = "p") %>% 
+  html_text(trim = TRUE)
+
+#now we do the same for all the articles
+
+for (i in seq_along("Post archivio 2016")) {
+  cat(i, " ")
+  read_html(here::here("Post archivio 2016//post_"[i])) %>% 
+    html_elements(css = "p") %>% 
+    html_text(trim = TRUE)
+  
+  Sys.sleep(0.5)
+}
 
 
 
