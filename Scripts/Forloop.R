@@ -65,35 +65,14 @@ prova47 %>%
 print(prova47) # I LINK SONO OK GIUSTI
 ###########################
 
-# CREARE FOR LOOP PER TUTTE LE PAGINE NELLA LISTA all_html_archivio2016 ????
+# CREARE STESSA FUNZIONE  PER TUTTE LE PAGINE NELLA LISTA all_html_archivio2016 
+
+all_html_chr = unlist(all_html_archivio2016) #From list to characters 
 
 blog="^https://beppegrillo\\.it/[^category].+[^jpg]$"
+links_47 = all_html_chr %>% 
+  str_subset(blog)
+links_47 %>% 
+  str_extract(all_html_chr)
 
-for (i in seq_along(all_html_archivio2016[[i]])){
-  all_links_47 [[i]] = all_html_archivio2016[[i]] %>% 
-    str_subset(blog)
-  all_links_47[[i]] %>% 
-    str_extract(all_html_archivio2016[[i]])
-  
-  Sys.sleep(0.5)
-}
-
-print(all_links_47)
-
-### prova 2
-
-
-links_arc_combined <- str_c(all_html_archivio2016 = XML::getHTMLLinks(to_scrape[i], externalOnly = T), 1:47)
-url_archivio <- "https://beppegrillo.it/category/archivio/2016/page/"
-
-web_page_archivio <- RCurl::getURL(url=url_archivio, httpheader= (user_id))
-
-for (i in seq_along(web_page_archivio[[i]])){
-  all_links_archivio = XML::getHTMLLinks(web_page_archivio[[i]], externalOnly = T)
-  Sys.sleep(0.5)
-}
-
-
-
-
-
+df_47_post = tibble(links_47) #ALL LINKS FOR ALL THE POST IN ARCHIVIO 2016 IN DATAFRAME
