@@ -49,10 +49,8 @@ BG <- RCurl::getURL("https://www.vatican.va/content/vatican/it.html",
 #### prove for loop
 
 
-
-
-for (i in seq_along(all_html_archivio2016[[i]]) {
-  lapply (blog="^https://beppegrillo\\.it/[^category].+[^jpg]$",
+for (i in seq_along(all_html_archivio2016[[i]])) {
+  lapply (blog,
           prova47 = all_html_archivio2016[[i]] %>% 
             str_subset(blog),
           prova47 %>% 

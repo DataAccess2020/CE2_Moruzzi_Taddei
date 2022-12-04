@@ -82,3 +82,56 @@ df_47_post = tibble(links_47) #ALL LINKS FOR ALL THE POST IN ARCHIVIO 2016 IN DA
 clean_df_47=distinct(df_47_post)
 
 
+## now we download the webpages for all the links
+
+download_politely_47 <- function(from_url, to_html, my_email, my_agent = R.Version()$version.string) {
+  
+  require(httr)
+  
+  stopifnot(is.character(from_url))
+  stopifnot(is.character(to_html))
+  stopifnot(is.character(my_email))
+  
+  get_pages <-httr::GET(url = unl_clean_df_47[i], 
+                        add_headers(
+                          From = email, 
+                          `User-Agent` = R.Version()$version.string
+                        )
+  )
+  
+  if (httr::http_status(get_pages)$message == "Success: (200) OK") {
+    bin <- content(get_pages, as = "raw")
+    writeBin(object = bin, con = to_html)
+  } else {
+    cat("Houston, we have a problem!")
+  }
+}
+
+
+
+dir.create("Post archivio 2016")
+
+unl_clean_df_47 <- unlist(clean_df_47)
+
+for (i in seq_along(unl_clean_df_47)) {
+  cat(i, " ")
+  download_politely_47(from_url = unl_clean_df_47[i], 
+                    to_html = here::here("Post archivio 2016", str_c("post_",i,".html")), 
+                    my_email = email)
+  
+  Sys.sleep(0.5)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
