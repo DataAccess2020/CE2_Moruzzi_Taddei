@@ -136,13 +136,13 @@ read_html(here::here("Post archivio 2016//post_1.html")) %>%
 
 #now we do the same for all the articles
 
-for (i in seq_along("Post archivio 2016")) {
-  cat(i, " ")
-  read_html(here::here("Post archivio 2016//post_"[i])) %>% 
+post_2016_html <- str_c("Post archivio 2016/post_", 1:363)
+links_arc
+
+main_text = for (i in seq_along(post_2016_html)) {
+  read_html(here::here("Post archivio 2016", str_c("post_",i,".html"))) %>% 
     html_elements(css = "p") %>% 
     html_text(trim = TRUE)
-  
-  Sys.sleep(0.5)
 }
 
 
