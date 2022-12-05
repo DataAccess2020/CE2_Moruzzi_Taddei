@@ -88,7 +88,8 @@ links_47 %>%
 
 df_47_post = tibble(links_47)     # Now we put all the right links of all the 47 pages in a data frame (tibble) to be more readble
 
-# We notice that the dataframe have repetitions and empty rows, so we clean "df_47_post" link/row by removing duplicates 
+# We notice that the dataframe have repetitions and empty rows, so we clean
+# "df_47_post" links/rows by removing duplicates and empty spaces
 
 clean_df_47=distinct(df_47_post)
 
@@ -150,7 +151,7 @@ read_html(here::here("Post archivio 2016//post_1.html")) %>%
 read_html(here::here("Post archivio 2016//post_1.html")) %>% 
   html_elements(css = "p") %>% 
   html_text(trim = TRUE) %>% 
-  head(1)
+  head(1)    # Head(1) to show use only the first that popup in each HTML post
 
 # They are correct!
 # Now we do the same for all the articles we downloaded 
@@ -169,14 +170,14 @@ main_text = lapply(scrape_363, function(x) {
 })
 # Create a large list with all 363 posts' MAIN TEXTS 
 
-unl_text <- unlist(main_text) #unlista la lista gigante con tutti i testi
+unl_text <- unlist(main_text) # We unlist the large list to get a character string with all the main paragraphs of all 363 posts
 
-df_text = tibble(unl_text) #messo in un dataframe
+df_text = tibble(unl_text) # We put the large character string in a dataframe (tibble)
 
-clean_df_text_all=distinct(df_text) #ripulita dai doppioni
+clean_df_text_all=distinct(df_text) # we clean "df_text" links/rows by removing duplicates and empty spaces
 
 
-# PER SOLO IL PRIMO PARAGRAFO NEL POST
+# for only the FIRST PARAGRAPH in each of the 363 posts
 
 library(dplyr)
 library(rvest)
@@ -189,13 +190,13 @@ main_text_first = lapply(scrape_363, function(x) {
     html_text(trim = TRUE) %>% 
     head(1)
 })
-#crea lista grande con tutti MAIN TEXT dei 363 post
+# Create a large list with all 363 posts' FIRST paragraph 
 
-unl_text_first <- unlist(main_text_first) #unlista la lista gigante con tutti i testi
+unl_text_first <- unlist(main_text_first) # We unlist the large list to get a character string with only the first paragraphs of all 363 posts
 
-df_text_first = tibble(unl_text_first) #messo in un dataframe
+df_text_first = tibble(unl_text_first) # We put the character string in a dataframe (tibble)
 
-clean_df_text_first=distinct(df_text_first) #ripulita dai doppioni
+clean_df_text_first=distinct(df_text_first)  # we clean "df_text_first" links/rows by removing duplicates and empty spaces
 
 
 
