@@ -2,8 +2,13 @@
 
 # A.
 
+# We create a combined character string which contains all the pages' URLs in Beppe Grillo's "Archivo 2016" (there are 47 pages)
+# The URL is "https://beppegrillo.it/category/archivio/2016/page/" and varies from page 1 to page 47
 
-# OUR FUNCTION DOWNLOAD
+links_arc <- str_c("https://beppegrillo.it/category/archivio/2016/page/", 1:47)
+links_arc
+
+# Our function "DOWNLOAD", to download all the HTML pages of Beppe Grillo's "Archivio 2016"
 
 library(httr)
 library(htmltools)
@@ -15,9 +20,9 @@ download_politely <- function(from_url, to_html, my_email, my_agent = R.Version(
   
   stopifnot(is.character(from_url))
   stopifnot(is.character(to_html))
-  stopifnot(is.character(my_email))
+  stopifnot(is.character(my_email))     # Only character strings are allowed
   
-  beppe_req <-httr::GET(url = links_arc[i], 
+  beppe_req <-httr::GET(url = links_arc[i],   # GET function for all the pages
                         add_headers(
                           From = email, 
                           `User-Agent` = R.Version()$version.string
@@ -32,10 +37,9 @@ download_politely <- function(from_url, to_html, my_email, my_agent = R.Version(
   }
 }
 
-# DOWNLOAD POLITELY STIAMO SCARICANDO LE PAGINE HTML DELL'ARCHIVIO DA PAG 1 A PAG 47
-links_arc <- str_c("https://beppegrillo.it/category/archivio/2016/page/", 1:47)
-links_arc
-dir.create("archivio2016")
+# We use our customized function to download politely all HTML pages from the archive
+
+dir.create("archivio2016")  # We store all the HTML file (47 files) in a new directory
 
 for (i in seq_along(links_arc)) {
   cat(i, " ")
@@ -43,39 +47,38 @@ for (i in seq_along(links_arc)) {
                     to_html = here::here("archivio2016", str_c("page_",i,".html")), 
                     my_email = email)
   
-  Sys.sleep(0.5)
+  Sys.sleep(0.5)  # We use a sys.sleep of 5 seconds to avoid beign banned from the server
 }
 
-################
-#COSì NELLA LISTA ABBIAMO TUTTI I LINK DI OGNI PAGINA
-to_scrape <- list.files(here::here("archivio2016"), full.names = TRUE)   # get the list of pages for the seasons
-all_html_archivio2016 <- vector(mode = "list", length = length(to_scrape))    # empty container where to place the titles
+# Now that we have all our 47 HTML files we want R to be able to read these document and find them so we list them
+
+to_scrape <- list.files(here::here("archivio2016"), full.names = TRUE)   # get the list of HTML pages
+all_html_archivio2016 <- vector(mode = "list", length = length(to_scrape))    # empty container where to place the content (all pages' links)
 
 for (i in seq_along(all_html_archivio2016)){
   all_html_archivio2016[[i]] = XML::getHTMLLinks(to_scrape[i], externalOnly = T)
                         
-  Sys.sleep(0.5)
+  Sys.sleep(0.5)              # We run a for loop to get all the HTML links in every page that we downloaded
 }
 
-all_html_archivio2016
+all_html_archivio2016   # It works! Now we have a list with every link in every of the 47 downloaded HTML pages 
 
-##############################
+# Now we try to figure out the correct function (using Regular Expressions) to get
+#only the links that redirects to other articles or post
 
-#Prova per link giusti ai post per pag2
-print(all_html_archivio2016[[2]])
+print(all_html_archivio2016[[2]])  # To see which links are in the second page for example
 
-blog="^https://beppegrillo\\.it/[^category].+[^jpg]$"
-prova47 = all_html_archivio2016[[1]] %>% 
+blog="^https://beppegrillo\\.it/[^category].+[^jpg]$"   # We want links that redirect to other posts (exclude links that redirect to
+prova47 = all_html_archivio2016[[1]] %>%                # the main page, categories of the website and images)
   str_subset(blog)
 prova47 %>% 
   str_extract(all_html_archivio2016[[1]])
 
-print(prova47) # I LINK SONO OK GIUSTI
-###########################
+print(prova47)      # The links are right!
 
-# CREARE STESSA FUNZIONE  PER TUTTE LE PAGINE NELLA LISTA all_html_archivio2016 
+# Now we create the same function, but far all the pages in the "all_html_archivio2016" list (previously created)
 
-all_html_chr = unlist(all_html_archivio2016) #From list to characters 
+all_html_chr = unlist(all_html_archivio2016) # From list to characters string with all the link of all the 47 pages
 
 blog="^https://beppegrillo\\.it/[^category].+[^jpg]$"
 links_47 = all_html_chr %>% 
@@ -83,15 +86,15 @@ links_47 = all_html_chr %>%
 links_47 %>% 
   str_extract(all_html_chr)
 
-df_47_post = tibble(links_47) #ALL LINKS FOR ALL THE POST IN ARCHIVIO 2016 IN DATAFRAME
+df_47_post = tibble(links_47)     # Now we put all the right links of all the 47 pages in a data frame (tibble) to be more readble
 
-########################
-#Clean all 47 df link removing duplicates
+# We notice that the dataframe have repetitions and empty rows, so we clean "df_47_post" link/row by removing duplicates 
+
 clean_df_47=distinct(df_47_post)
 
 # B.
 
-# now we download the webpages for all the links
+# Now we download the webpages for all the links contained in the cleaned dataframe ("clean_df_47")
 
 download_politely_47 <- function(from_url, to_html, my_email, my_agent = R.Version()$version.string) {
   
@@ -101,7 +104,7 @@ download_politely_47 <- function(from_url, to_html, my_email, my_agent = R.Versi
   stopifnot(is.character(to_html))
   stopifnot(is.character(my_email))
   
-  get_pages <-httr::GET(url = unl_clean_df_47[i], 
+  get_pages <-httr::GET(url = unl_clean_df_47[i],       # we change the dataset containing the pages' URLs to be downloaded
                         add_headers(
                           From = email, 
                           `User-Agent` = R.Version()$version.string
@@ -116,7 +119,8 @@ download_politely_47 <- function(from_url, to_html, my_email, my_agent = R.Versi
   }
 }
 
-#now we download all the html pages for each single post and we put them in a new specific folder
+# Now we download all the HTML pages, for each single post, and we put them in a new specific folder
+# Using, again, a for loop
 
 dir.create("Post archivio 2016")
 
@@ -133,25 +137,25 @@ for (i in seq_along(unl_clean_df_47)) {
 
 # C.
 
-#now we scrape the main text from all the articles
+# Now we scrape the main text from all the articles that we have downloaded (363 HTML posts)
 
-#first try just with the first article ALL TEXT
+# To understand how to compose the function we make a first try just with
+# the first article with ALL text/paragraphs
 
 read_html(here::here("Post archivio 2016//post_1.html")) %>% 
   html_elements(css = "p") %>% 
   html_text(trim = TRUE)
 
-# for ONLY THE FIRST PARAGRAPH
+# And for ONLY THE FIRST PARAGRAPH
 read_html(here::here("Post archivio 2016//post_1.html")) %>% 
   html_elements(css = "p") %>% 
   html_text(trim = TRUE) %>% 
   head(1)
 
-#now we do the same for all the articles
+# They are correct!
+# Now we do the same for all the articles we downloaded 
 
-#####################
-
-# PER TUTTI I PARAGRAFI NEL POST
+# For ALL text/paragraphs in the posts
 
 library(dplyr)
 library(rvest)
@@ -163,7 +167,7 @@ main_text = lapply(scrape_363, function(x) {
     html_elements(css = "p") %>% 
     html_text(trim = TRUE)
 })
-#crea lista grande con tutti MAIN TEXT dei 363 post
+# Create a large list with all 363 posts' MAIN TEXTS 
 
 unl_text <- unlist(main_text) #unlista la lista gigante con tutti i testi
 
