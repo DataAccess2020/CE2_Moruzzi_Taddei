@@ -11,14 +11,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## TASK 1
 
-When we tryed to open the /robots.txt page for the blog beppegrillo.it didn't work, the result was "404 Not Found". This means that the blog doesn't have any restrictions for crawlers who want to download data from it. Next, in order to still be polite, we can download data frome the web page but identifying ourselves first and using the `Sys.sleep()` function not to overload the webpage.
+When we tryed to open the /robots.txt page for the blog beppegrillo.it didn't work, the result was "404 Not Found". This means that the blog doesn't have any restrictions for crawlers who want to download data from it. Next, in order to still be polite, we can download data from the web page but identifying ourselves first and using the `Sys.sleep()` function not to overload the webpage.
 
 ## TASK 2
 
 First we download the web page identifying ourselves and using the package RCurl:
 
-
-```{r cars, message=FALSE, warning=FALSE, echo=TRUE}
+```{r, message=FALSE, warning=FALSE, echo=TRUE}
 library(RCurl)
 
 url <- "https://beppegrillo.it/un-mare-di-plastica-ci-sommergera/"
@@ -28,13 +27,66 @@ user_id <- c(From = email, `User-Agent` = agent)
 
 web_page <- RCurl::getURL(url=url, httpheader= (user_id))
 ```
-
 ## TASK 3
 
+To download all the links in the web page we used the following function from XML: `all_link = XML::getHTMLLinks(web_page, externalOnly = T)`. To keep only the links the redirect to posts we used the regular expression "^https://beppegrillo\\.it/[^category].+[^jpg]$" as a pattern inside the function `str_subset`. Then we extracted all the selected links and put them inside a dataframe. the last line of code shown here below is necessary to remove duplicates (function `distinct ()`)
 
+```{r, message=FALSE, warning=FALSE, echo=TRUE}
+library(XML)
+library(stringr)
+library(tidyverse)
+
+blog="^https://beppegrillo\\.it/[^category].+[^jpg]$"
+links_post = all_link %>% 
+  str_subset(blog)
+links_post %>% 
+  str_extract(all_link)
+
+df_BG_posts = tibble(links_post)
+
+clean_df_BG = distinct(df_BG_posts)
+```
 
 ## TASK 4
 
 ## TASK 5
+
+To crawl in the field of computer science means to collect data from the Internet. Web spiders, or web crawlers, are programs that collect large amounts of data from the internet at the same time through hyperlinks methodically and automatically by browsing and downloading web pages. When a web crawler is used to download web pages and extract data from them simultaneously it is called a web scraper.
+
+In task 4 to scrape the beppegrillo.it blog we used web scraping tools inside of R; to do that we had to use specific R packages. the main difference is that we did all the work inside the R environment. Another difference is that we had to collect the URLs we needed manually, and then parse and extract data from those URLs. Instead, incorporating the crawling process into R through the package Rcrawler we could have automatically parsed and crawled all the URLs in a specific domain. And, as shown below, we could have done all of this things in one function.
+
+Here we tried to create a function to build a spider scraper using the Rcrawler package documentation.
+
+```{r, message=FALSE, warning=FALSE, echo=TRUE}
+install.packages("Rcrawler")
+library (Rcrawler)
+
+Rcrawler(Website = "https://beppegrillo.it/",
+         DIR  = "C:\Users\chiar\Desktop\Università\DAPS&CO\DATA_ACCESS\CE2_Moruzzi_Taddei", 
+         RequestsDelay = 1,       # similar to Sys.sleep()
+         Obeyrobots = TRUE,       # follows the instructions given by the robots.txt (allowed/not allowed parts of the website to scrape)
+         Useragent,               # gives information about the user
+         use_proxy = NULL, 
+         Encod,                   # detects the language used to program the website
+         Timeout = 5,             # stops if the response doesn't come in the time specified (in this case 5 seconds)
+         URLlenlimit = 255,       # sets maximum number of characters inside the URL (255 = default number)
+         dataUrlfilter = "pattern",     # filters the parts to scrape using regular expressions
+         crawlUrlfilter,                # filters the parts to crawl other URLs using regular expressions
+         crawlZoneCSSPat = "p",         # works like SelectorGadget (with CSS)
+         crawlZoneXPath = "pattern",         # works like SelectorGadget (with XPath)
+         ignoreUrlParams,         # doesn't consider duplicates with same content but different URLs
+         KeywordsFilter = c("keyword"),      # scrapes only pages which contain the keywords (must be a vector)
+         KeywordsAccuracy,                   #  accuracy value is calculated using the number of matched keywords and their occurence
+         FUNPageFilter,                 # filters the pages to scrape according to a specific function
+         ExcludeXpathPat,               # excludes specific parts of the extracted content (using Xpath)
+         ExcludeCSSPat,                 # excludes specific parts of the extracted content (using CSS)
+         ExtractAsText = TRUE,          # removes HTML tags 
+         ManyPerPattern = TRUE,         # if true, extracts all the parts which match the pattern; if false, just the first one
+         saveOnDisk = TRUE,             # if true stores downloaded contents in a specific folder
+         NetworkData = FALSE,           # if true, maps the hyperlinks in the website
+         statslinks = FALSE,            # counts the number of input and output links of each crawled web page
+         )
+```
+
 
 
