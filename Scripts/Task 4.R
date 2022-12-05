@@ -1,6 +1,14 @@
-#Punto 4 a) get all link ìs on the 47 pages (archivio 2016)
+### TASK 4 ###
+
+# A.
+
 
 # OUR FUNCTION DOWNLOAD
+
+library(httr)
+library(htmltools)
+library(rvest)
+
 download_politely <- function(from_url, to_html, my_email, my_agent = R.Version()$version.string) {
   
   require(httr)
@@ -81,8 +89,9 @@ df_47_post = tibble(links_47) #ALL LINKS FOR ALL THE POST IN ARCHIVIO 2016 IN DA
 #Clean all 47 df link removing duplicates
 clean_df_47=distinct(df_47_post)
 
+# B.
 
-## now we download the webpages for all the links
+# now we download the webpages for all the links
 
 download_politely_47 <- function(from_url, to_html, my_email, my_agent = R.Version()$version.string) {
   
@@ -122,11 +131,9 @@ for (i in seq_along(unl_clean_df_47)) {
   Sys.sleep(0.5)
 }
 
-#now we scrape the main text from all the articles
+# C.
 
-library(httr)
-library(htmltools)
-library(rvest)
+#now we scrape the main text from all the articles
 
 #first try just with the first article ALL TEXT
 

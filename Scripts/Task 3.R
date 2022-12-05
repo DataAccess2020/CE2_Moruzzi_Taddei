@@ -1,8 +1,21 @@
-# Use the regexp to take the links
+### TASK 3 ###
 
+#Get all links CODING
+library(XML)
 library(stringr)
-library (XML)
 library(tidyverse)
+library(dplyr)
+
+#To get all the link in the HTML that we download
+url
+all_link = XML::getHTMLLinks(web_page, externalOnly = T)
+
+all_link
+
+#Now we makle a data frame to collect all the links
+df_links = tibble(all_link)
+
+# Use the regexp to take the links
 
 str_view_all(all_link, pattern= "https://beppegrillo.it/")
 
@@ -18,7 +31,6 @@ beppe_link %>%
 
 df_links_beppe = tibble(beppe_link)
 
-
 #removes all the links that redirect to the main page, categories and jpg
 
 blog="^https://beppegrillo\\.it/[^category].+[^jpg]$"
@@ -29,7 +41,7 @@ links_post %>%
 
 df_BG_posts = tibble(links_post)
 
-# Clean the df removing duplicates
+# Clean the dataframe removing duplicates
 
 clean_df_BG = distinct(df_BG_posts)
 
