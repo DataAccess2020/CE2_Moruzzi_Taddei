@@ -1,6 +1,6 @@
 ### TASK 4 ###
 
-# A.
+### A.
 
 # We create a combined character string which contains all the pages' URLs in Beppe Grillo's "Archivo 2016" (there are 47 pages)
 # The URL is "https://beppegrillo.it/category/archivio/2016/page/" and varies from page 1 to page 47
@@ -93,7 +93,7 @@ df_47_post = tibble(links_47)     # Now we put all the right links of all the 47
 
 clean_df_47=distinct(df_47_post)
 
-# B.
+### B.
 
 # Now we download the webpages for all the links contained in the cleaned dataframe ("clean_df_47")
 
@@ -136,7 +136,7 @@ for (i in seq_along(unl_clean_df_47)) {
   Sys.sleep(0.5)
 }
 
-# C.
+### C.
 
 # Now we scrape the main text from all the articles that we have downloaded (363 HTML posts)
 
