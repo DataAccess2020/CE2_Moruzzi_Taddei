@@ -17,9 +17,7 @@ When we tryed to open the /robots.txt page for the blog beppegrillo.it didn't wo
 
 First we download the web page identifying ourselves and using the package RCurl:
 
-```{r, message=FALSE, warning=FALSE, echo=TRUE}
-library(RCurl)
-
+```{r, message=FALSE, warning=FALSE, echo=TRUE, eval=FALSE}
 url <- "https://beppegrillo.it/un-mare-di-plastica-ci-sommergera/"
 email <- "icotaddei@gmail.com"
 agent <- R.Version()$version.string
@@ -31,7 +29,7 @@ web_page <- RCurl::getURL(url=url, httpheader= (user_id))
 
 To download all the links in the web page we used the following function from XML: `all_link = XML::getHTMLLinks(web_page, externalOnly = T)`. To keep only the links the redirect to posts we used the regular expression "^https://beppegrillo\\.it/[^category].+[^jpg]$" as a pattern inside the function `str_subset`. Then we extracted all the selected links and put them inside a dataframe. the last line of code shown here below is necessary to remove duplicates (function `distinct ()`)
 
-```{r, message=FALSE, warning=FALSE, echo=TRUE}
+```{r, message=FALSE, warning=FALSE, echo=TRUE, eval=FALSE}
 library(XML)
 library(stringr)
 library(tidyverse)
@@ -49,6 +47,64 @@ clean_df_BG = distinct(df_BG_posts)
 
 ## TASK 4
 
+First we created a combined character string which contains all the pages' URLs in Beppe Grillo's "Archivo 2016" (there are 47 pages). The URL is "https://beppegrillo.it/category/archivio/2016/page/" and varies from page 1 to page 47 (page/2/ page/3/ ... page/47/). For page 1 the URL is simply "https://beppegrillo.it/category/archivio/2016/" without specifying the number of the page.
+
+```{r, message=FALSE, warning=FALSE, echo=TRUE, eval=FALSE}
+links_arc <- str_c("https://beppegrillo.it/category/archivio/2016/page/", 1:47)
+```
+
+Next, to download all the pages of the linked posts we created our `download_pollitely()` function and also a new directory to store them. To iterate the function for each single page we had to use the for loop, and apply the function `download_pollitely()` over and over. We used a `Sys.sleep()` of 0.5 seconds not to overload the server and to avoid being banned from the website.
+
+```{r, message=FALSE, warning=FALSE, echo=TRUE, eval=FALSE}
+
+download_politely <- function(from_url, to_html, my_email, my_agent = R.Version()$version.string) {
+  
+  require(httr)
+  
+  stopifnot(is.character(from_url))
+  stopifnot(is.character(to_html))
+  stopifnot(is.character(my_email))     # Only character strings are allowed
+  
+  beppe_req <-httr::GET(url = links_arc[i],   # GET function for all the pages
+                        add_headers(
+                          From = email, 
+                          `User-Agent` = R.Version()$version.string
+                        )
+  )
+  
+  if (httr::http_status(beppe_req)$message == "Success: (200) OK") {
+    bin <- content(beppe_req, as = "raw")
+    writeBin(object = bin, con = to_html)
+  } else {
+    cat("Houston, we have a problem!")
+  }
+}
+
+```
+
+```{r, message=FALSE, warning=FALSE, echo=TRUE, eval=FALSE}
+for (i in seq_along(links_arc)) {
+  cat(i, " ")
+  download_politely(from_url = links_arc[i], 
+                    to_html = here::here("archivio2016", str_c("page_",i,".html")), 
+                    my_email = email)
+  
+  Sys.sleep(0.5)
+}
+```
+
+Lastly we scraped the main text of each single linked post's webpage, for a total of more than 350 posts. If an article doesn't contain any text the result in the list is `" "`. To scrape the main text we used `lapply()` to apply the functions `read_html()`, `html_elements()` and `html_text()` to all the posts in the folder "Post archivio 2016".
+
+```{r, message=FALSE, warning=FALSE, echo=TRUE, eval=FALSE}
+scrape_363 <- list.files(here::here("Post archivio 2016"), pattern="*.html", full.names = TRUE)
+
+main_text = lapply(scrape_363, function(x) {
+  read = read_html(x) %>% 
+    html_elements(css = "p") %>% 
+    html_text(trim = TRUE)
+```
+
+
 ## TASK 5
 
 To crawl in the field of computer science means to collect data from the Internet. Web spiders, or web crawlers, are programs that collect large amounts of data from the internet at the same time through hyperlinks methodically and automatically by browsing and downloading web pages. When a web crawler is used to download web pages and extract data from them simultaneously it is called a web scraper.
@@ -57,31 +113,31 @@ In task 4 to scrape the beppegrillo.it blog we used web scraping tools inside of
 
 Here we tried to create a function to build a spider scraper using the Rcrawler package documentation.
 
-```{r, message=FALSE, warning=FALSE, echo=TRUE}
+```{r, message=FALSE, warning=FALSE, echo=TRUE, eval=FALSE}
 install.packages("Rcrawler")
 library (Rcrawler)
 
 Rcrawler(Website = "https://beppegrillo.it/",
          DIR  = "C:\Users\chiar\Desktop\Università\DAPS&CO\DATA_ACCESS\CE2_Moruzzi_Taddei", 
          RequestsDelay = 1,       # similar to Sys.sleep()
-         Obeyrobots = TRUE,       # follows the instructions given by the robots.txt (allowed/not allowed parts of the website to scrape)
+         Obeyrobots = TRUE,       # follows the instructions given by the robots.txt (allowed/not allowed parts                                     of the website to scrape)
          Useragent,               # gives information about the user
          use_proxy = NULL, 
          Encod,                   # detects the language used to program the website
-         Timeout = 5,             # stops if the response doesn't come in the time specified (in this case 5 seconds)
+         Timeout = 5,             # stops if the response doesn't come in the time specified (in this case 5                                        seconds)
          URLlenlimit = 255,       # sets maximum number of characters inside the URL (255 = default number)
          dataUrlfilter = "pattern",     # filters the parts to scrape using regular expressions
          crawlUrlfilter,                # filters the parts to crawl other URLs using regular expressions
          crawlZoneCSSPat = "p",         # works like SelectorGadget (with CSS)
          crawlZoneXPath = "pattern",         # works like SelectorGadget (with XPath)
-         ignoreUrlParams,         # doesn't consider duplicates with same content but different URLs
+         ignoreUrlParams,                    # doesn't consider duplicates with same content but different URLs
          KeywordsFilter = c("keyword"),      # scrapes only pages which contain the keywords (must be a vector)
-         KeywordsAccuracy,                   #  accuracy value is calculated using the number of matched keywords and their occurence
+         KeywordsAccuracy,                   # accuracy value is calculated using the number of matched                                                       keywords and their occurence
          FUNPageFilter,                 # filters the pages to scrape according to a specific function
          ExcludeXpathPat,               # excludes specific parts of the extracted content (using Xpath)
          ExcludeCSSPat,                 # excludes specific parts of the extracted content (using CSS)
          ExtractAsText = TRUE,          # removes HTML tags 
-         ManyPerPattern = TRUE,         # if true, extracts all the parts which match the pattern; if false, just the first one
+         ManyPerPattern = TRUE,         # if true, extracts all the parts which match the pattern; if false,                                              just the first one
          saveOnDisk = TRUE,             # if true stores downloaded contents in a specific folder
          NetworkData = FALSE,           # if true, maps the hyperlinks in the website
          statslinks = FALSE,            # counts the number of input and output links of each crawled web page
