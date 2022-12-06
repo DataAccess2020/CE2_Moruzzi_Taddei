@@ -37,9 +37,9 @@ download_politely <- function(from_url, to_html, my_email, my_agent = R.Version(
   }
 }
 
-# We use our customized function to download politely all HTML pages from the archive
+# We use our customized function to download politely all the HTML pages from the archive
 
-dir.create("archivio2016")  # We store all the HTML file (47 files) in a new directory
+dir.create("archivio2016")  # We store all the HTML files (47 files) in a new directory
 
 for (i in seq_along(links_arc)) {
   cat(i, " ")
@@ -47,10 +47,10 @@ for (i in seq_along(links_arc)) {
                     to_html = here::here("archivio2016", str_c("page_",i,".html")), 
                     my_email = email)
   
-  Sys.sleep(0.5)  # We use a sys.sleep of 5 seconds to avoid beign banned from the server
+  Sys.sleep(0.5)  # We use a sys.sleep of 0.5 seconds to avoid being banned from the server
 }
 
-# Now that we have all our 47 HTML files we want R to be able to read these document and find them so we list them
+# Now that we have all our 47 HTML files we want R to be able to read these documents and find them so we list them
 
 to_scrape <- list.files(here::here("archivio2016"), full.names = TRUE)   # get the list of HTML pages
 all_html_archivio2016 <- vector(mode = "list", length = length(to_scrape))    # empty container where to place the content (all pages' links)
@@ -61,7 +61,7 @@ for (i in seq_along(all_html_archivio2016)){
   Sys.sleep(0.5)              # We run a for loop to get all the HTML links in every page that we downloaded
 }
 
-all_html_archivio2016   # It works! Now we have a list with every link in every of the 47 downloaded HTML pages 
+all_html_archivio2016   # It works! Now we have a list with every link for each of the 47 downloaded HTML pages 
 
 # Now we try to figure out the correct function (using Regular Expressions) to get
 #only the links that redirects to other articles or post
@@ -76,9 +76,9 @@ prova47 %>%
 
 print(prova47)      # The links are right!
 
-# Now we create the same function, but far all the pages in the "all_html_archivio2016" list (previously created)
+# Now we create the same function, but for all the pages in the "all_html_archivio2016" list (previously created)
 
-all_html_chr = unlist(all_html_archivio2016) # From list to characters string with all the link of all the 47 pages
+all_html_chr = unlist(all_html_archivio2016) # From list to characters string with all the links of all the 47 pages
 
 blog="^https://beppegrillo\\.it/[^category].+[^jpg]$"
 links_47 = all_html_chr %>% 
@@ -86,9 +86,9 @@ links_47 = all_html_chr %>%
 links_47 %>% 
   str_extract(all_html_chr)
 
-df_47_post = tibble(links_47)     # Now we put all the right links of all the 47 pages in a data frame (tibble) to be more readble
+df_47_post = tibble(links_47)     # Now we put all the right linkss of all the 47 pages in a data frame (tibble) to be more readable
 
-# We notice that the dataframe have repetitions and empty rows, so we clean
+# We notice that the dataframe has repetitions and empty rows, so we clean
 # "df_47_post" links/rows by removing duplicates and empty spaces
 
 clean_df_47=distinct(df_47_post)
